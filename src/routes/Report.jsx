@@ -18,6 +18,7 @@ const Report = () => {
   const [storedData, setStoredData] = useState(null);
   const [preview, setPreview] = useState(null);
   const { user, setUser } = useUser();
+  const [imageFile,setImageFile]=useState(null)
 
   // ✅ Check localStorage for submission
   useEffect(() => {
@@ -32,24 +33,21 @@ const Report = () => {
 
   // ✅ Handle form submission
   const onSubmit = async (data) => {
-    console.log(data)
+    console.log(data.image[0])
     try {
 
         //Getting userID first
 
-      const { type, reward, description, image } = data;
+      const { type, reward, description, image ,contact_no} = data;
       let imageUrl = null;
 
-      console.log("image",image[0])
       // ✅ Upload image to Supabase storage
-      if (image && image[0]) {
-        const file = image[0];
-        const fileName = `${Date.now()}-${file.name}`;
+      if (imageFile) {
+        const fileName = `${Date.now()}-${imageFile.name}`;
 
-        return
         const { error: uploadError } = await supabase.storage
           .from("report-images") // your bucket name
-          .upload(fileName, file);
+          .upload(fileName, imageFile);
 
         if (uploadError) throw uploadError;
 
@@ -58,21 +56,21 @@ const Report = () => {
           .getPublicUrl(fileName);
 
         imageUrl = publicUrlData.publicUrl;
+      }else{
+      return  toast.error("image issue")
       }
 
-      return
       // ✅ Insert report data into Supabase
       const { error } = await supabase
         .from("reports")
-        .insert([{ type, reward, description, image_url: imageUrl, user_id:user.id }]);
+        .insert([{ type, reward, description, image_url: imageUrl,contact_no, user_id:user.id }]);
 
       if (error) throw error;
 
+
+
       toast.success("✅ Report submitted successfully!");
-      const reportInfo = { type, reward, description, imageUrl };
-      localStorage.setItem("reportSubmitted", "true");
-      localStorage.setItem("reportData", JSON.stringify(reportInfo));
-      setStoredData(reportInfo);
+navigate("/explore")
       setIsSubmitted(true);
     } catch (error) {
       toast.error("❌ " + error.message);
@@ -83,6 +81,7 @@ const Report = () => {
   // ✅ Handle image preview
   const handleImagePreview = (e) => {
     const file = e.target.files[0];
+    setImageFile(file)
     if (file) {
       setPreview(URL.createObjectURL(file));
     }
@@ -110,6 +109,21 @@ const Report = () => {
         </div>
         {errors.type && (
           <p className="text-red-400 text-sm">{errors.type.message}</p>
+        )}
+
+  {/* conctact number */}
+        <div className="flex items-center border border-gray-700 rounded-lg px-3 py-2">
+          <FileText className="mr-3 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Contact number"
+            className="bg-transparent outline-none w-full"
+            {...register("contact_no", { required: "contact number is required" })}
+            disabled={isSubmitted}
+          />
+        </div>
+        {errors.type && (
+          <p className="text-red-400 text-sm">{errors.contact_no.message}</p>
         )}
 
         {/* Reward */}
@@ -154,7 +168,7 @@ const Report = () => {
               type="file"
               accept="image/*"
               className="hidden"
-              {...register("image")}
+              {...register("image", { required: "Image is required" })}
               onChange={handleImagePreview}
               disabled={isSubmitted}
             />
