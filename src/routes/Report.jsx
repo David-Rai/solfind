@@ -32,11 +32,7 @@ const Report = () => {
 
   // ✅ Handle form submission
   const onSubmit = async (data) => {
-    if (isSubmitted) {
-      toast.warning("⚠️ You already submitted a report!");
-      return;
-    }
-
+    console.log(data)
     try {
 
         //Getting userID first
@@ -44,10 +40,10 @@ const Report = () => {
       const { type, reward, description, image } = data;
       let imageUrl = null;
 
+      console.log("image",image[0])
       // ✅ Upload image to Supabase storage
       if (image && image[0]) {
         const file = image[0];
-        console.log(file)
         const fileName = `${Date.now()}-${file.name}`;
 
         return
@@ -64,6 +60,7 @@ const Report = () => {
         imageUrl = publicUrlData.publicUrl;
       }
 
+      return
       // ✅ Insert report data into Supabase
       const { error } = await supabase
         .from("reports")
