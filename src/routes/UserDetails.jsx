@@ -18,32 +18,32 @@ const UserDetails = () => {
 
     // ✅ Check if user data is already submitted
   useEffect(() => {
-    const submitted = localStorage.getItem("userSubmitted");
     const userData = localStorage.getItem("userData");
 
-    if (submitted === "true" && userData) {
+    if (userData) {
       setUser(JSON.parse(userData))
 navigate('/explore')
     }
   }, []);
 
   // ✅ Form submit handler
-  const onSubmit = async (data) => {
+  const onSubmit = async (formData) => {
     setIsSubmitting(true);
 
-    const { name, email, contact_no } = data;
+    const { name, email, contact_no } = formData;
 
-    const { error } = await supabase.from("users").insert([
+    const { error,data } = await supabase.from("users").insert([
       { name, email, contact_no },
-    ]);
+    ])
+      .select()
 
     if (error) {
       toast.error("❌ Failed to save data: " + error.message);
       setIsSubmitting(false);
     } else {
+      console.log(data)
       toast.success("✅ User added successfully!");
-        localStorage.setItem("userSubmitted", "true");
-      localStorage.setItem("userData", JSON.stringify(data));
+      localStorage.setItem("userData", JSON.stringify(data[0]));
     }
   };
 

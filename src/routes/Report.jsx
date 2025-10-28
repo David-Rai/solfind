@@ -21,11 +21,9 @@ const Report = () => {
 
   // ✅ Check localStorage for submission
   useEffect(() => {
-    const submitted = localStorage.getItem("userSubmitted");
     const userData = localStorage.getItem("userData");
 
-    if (submitted === "true" && userData) {
-        console.log(JSON.parse(userData))
+    if (userData) {
       setUser(JSON.parse(userData));
     }else{
         navigate("/connectWallet")
@@ -49,7 +47,10 @@ const Report = () => {
       // ✅ Upload image to Supabase storage
       if (image && image[0]) {
         const file = image[0];
+        console.log(file)
         const fileName = `${Date.now()}-${file.name}`;
+
+        return
         const { error: uploadError } = await supabase.storage
           .from("report-images") // your bucket name
           .upload(fileName, file);
@@ -66,7 +67,7 @@ const Report = () => {
       // ✅ Insert report data into Supabase
       const { error } = await supabase
         .from("reports")
-        .insert([{ type, reward, description, image_url: imageUrl, user_id }]);
+        .insert([{ type, reward, description, image_url: imageUrl, user_id:user.id }]);
 
       if (error) throw error;
 

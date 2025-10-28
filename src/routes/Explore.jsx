@@ -1,11 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Explore=()=>{
+const navigate=useNavigate()
 
     return (
         <>
         <main>
-            explore page
+       <nav>
+             explore page
+    <button onClick={()=> navigate('/report')}>Report missing </button>
+       </nav>
         </main>
         </>
     )
