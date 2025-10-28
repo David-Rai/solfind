@@ -6,7 +6,9 @@ import {
 } from "react-router-dom";
 import Home from "./routes/Home";
 import Explore from "./routes/Explore";
+import MyReports from "./routes/MyReports";
 import ImageUpload from './routes/ImageUpload'
+import SubmitFound from "./routes/SubmitFound";
 import Report from "./routes/Report";
 import ConnectWallet from './routes/ConnectWallet'
 
@@ -28,8 +30,12 @@ const router = createBrowserRouter([
     element: <Report />,
   },
   {
-    path: "/upload",
-    element: <ImageUpload />,
+    path: "/submitFound",
+    element: <SubmitFound />,
+  },
+  {
+    path: "/myReports",
+    element: <MyReports />,
   }
   // ,
   // {

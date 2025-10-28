@@ -30,6 +30,13 @@ const Explore = () => {
         >
           Report Missing
         </button>
+                <button
+          onClick={() => navigate("/report")}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition"
+        >
+        My reports
+        </button>
+
       </div>
 
       {/* Reports Grid */}
@@ -61,6 +68,13 @@ const Explore = () => {
                   Reported by {report.name}
                 </p>
               </div>
+              <button
+              onClick={()=> navigate('/submitFound')}
+  className="mt-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold"
+>
+  I Found This Item
+</button>
+
             </div>
           ))
         )}
