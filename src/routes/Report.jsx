@@ -38,7 +38,7 @@ const Report = () => {
 
         //Getting userID first
 
-      const { type, reward, description, image ,contact_no} = data;
+      const { type, reward, description,contact_no} = data;
       let imageUrl = null;
 
       // ✅ Upload image to Supabase storage
@@ -63,7 +63,7 @@ const Report = () => {
       // ✅ Insert report data into Supabase
       const { error } = await supabase
         .from("reports")
-        .insert([{ type, reward, description, image_url: imageUrl,contact_no, user_id:user.id }]);
+        .insert([{ type, reward, description, image_url: imageUrl,contact_no, user_id:user.id ,name:user.name}]);
 
       if (error) throw error;
 

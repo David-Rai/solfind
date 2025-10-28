@@ -58,7 +58,7 @@ const Explore = () => {
                   Reward: {report.reward} SOL
                 </p>
                 <p className="text-gray-500 text-sm">
-                  Reported by User ID: {report.user_id}
+                  Reported by {report.name}
                 </p>
               </div>
             </div>
