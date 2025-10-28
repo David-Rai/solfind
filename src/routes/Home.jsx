@@ -16,7 +16,12 @@ function App() {
           <button 
           onClick={()=> navigate("/connectWallet")}
           className="bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition">
-            Get Started
+            Create Account
+          </button>
+          <button 
+          onClick={()=> navigate("/explore")}
+          className="bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition">
+          Explore 
           </button>
         </div>
       </header>

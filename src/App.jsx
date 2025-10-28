@@ -5,6 +5,8 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Home from "./routes/Home";
+import Explore from "./routes/Explore";
+import Report from "./routes/Report";
 import ConnectWallet from './routes/ConnectWallet'
 
 const router = createBrowserRouter([
@@ -15,6 +17,14 @@ const router = createBrowserRouter([
   {
     path: "/connectWallet",
     element: <ConnectWallet />,
+  },
+  {
+    path: "/explore",
+    element: <Explore />,
+  },
+  {
+    path: "/report",
+    element: <Report />,
   }
   // ,
   // {

@@ -1,13 +1,20 @@
+
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import supabase from '../supabase/supabase'
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { User, Mail, Phone } from "lucide-react"; // icons
+import { useUser, useWallet } from "../store/store";
 
 const UserDetails = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {setUser,user}=useUser()
+  const {walletAddress}=useWallet()
+  const navigate=useNavigate()
 
     // ✅ Check if user data is already submitted
   useEffect(() => {
@@ -15,7 +22,8 @@ const UserDetails = () => {
     const userData = localStorage.getItem("userData");
 
     if (submitted === "true" && userData) {
-      setStoredData(JSON.parse(userData));
+      setUser(JSON.parse(userData))
+navigate('/explore')
     }
   }, []);
 
