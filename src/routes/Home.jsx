@@ -1,7 +1,9 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import { Search, Users, MapPin, Award } from "lucide-react";
 
 function App() {
+    const navigate=useNavigate()
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Hero Section */}
@@ -11,7 +13,9 @@ function App() {
           <p className="text-xl mb-8">
             Find missing items or people and get rewarded! SolFind connects the community to make finding easier.
           </p>
-          <button className="bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition">
+          <button 
+          onClick={()=> navigate("/connectWallet")}
+          className="bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition">
             Get Started
           </button>
         </div>
