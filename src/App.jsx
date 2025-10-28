@@ -1,4 +1,5 @@
 import React from "react";
+import { ToastContainer } from "react-toastify";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -14,14 +15,19 @@ const router = createBrowserRouter([
   {
     path: "/connectWallet",
     element: <ConnectWallet />,
-  },
+  }
+  // ,
+  // {
+  //   path: "/all",
+  //   element: <All />,
+  // }
 ]);
 
 const App=()=>{
 return (
 <>
 <RouterProvider router={router}/>
-
+<ToastContainer />
 </>
 )
 }

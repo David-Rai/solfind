@@ -1,0 +1,209 @@
+{
+  "address": "6QfyQYKAUR5rbNgJkLkV4gynvPsbFTcPdQUuZmSVAZMK",
+  "metadata": {
+    "name": "minimal_find_my_items",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "cancel_report",
+      "discriminator": [
+        74,
+        210,
+        39,
+        146,
+        80,
+        169,
+        54,
+        211
+      ],
+      "accounts": [
+        {
+          "name": "reporter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "report",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_report",
+      "discriminator": [
+        130,
+        99,
+        173,
+        207,
+        171,
+        76,
+        80,
+        142
+      ],
+      "accounts": [
+        {
+          "name": "reporter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "report",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "reward_amount",
+          "type": "u64"
+        },
+        {
+          "name": "report_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "release_reward",
+      "discriminator": [
+        109,
+        168,
+        217,
+        34,
+        229,
+        21,
+        86,
+        77
+      ],
+      "accounts": [
+        {
+          "name": "reporter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "finder",
+          "writable": true
+        },
+        {
+          "name": "report",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "finder_pubkey",
+          "type": "pubkey"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Report",
+      "discriminator": [
+        232,
+        246,
+        229,
+        227,
+        242,
+        105,
+        190,
+        2
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Unauthorized action"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidStatus",
+      "msg": "Invalid status"
+    }
+  ],
+  "types": [
+    {
+      "name": "Report",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reporter_pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "finder_pubkey",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "reward_amount",
+            "type": "u64"
+          },
+          {
+            "name": "report_id",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "ReportStatus"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReportStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Released"
+          },
+          {
+            "name": "Canceled"
+          }
+        ]
+      }
+    }
+  ]
+}
