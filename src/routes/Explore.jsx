@@ -31,7 +31,7 @@ const Explore = () => {
           Report Missing
         </button>
                 <button
-          onClick={() => navigate("/report")}
+          onClick={() => navigate("/myReports")}
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition"
         >
         My reports
