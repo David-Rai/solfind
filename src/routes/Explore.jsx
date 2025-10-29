@@ -69,7 +69,7 @@ const Explore = () => {
                 </p>
               </div>
               <button
-              onClick={()=> navigate('/submitFound')}
+              onClick={()=> navigate('/submitFound',{state:{report}})}
   className="mt-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold"
 >
   I Found This Item
