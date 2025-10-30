@@ -338,10 +338,8 @@ function App() {
       );
 
 const programInstance = new Program(idl, PROGRAM_ID, provider);
-
       setProgram(programInstance);
-      console.log("Program initialized successfully");
-      
+      console.log("Program initialized successfully");      
     } catch (err) {
       console.error("Error initializing program:", err);
       notify("Error initializing program: " + err.message, "error");
