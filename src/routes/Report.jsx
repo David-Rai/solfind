@@ -13,11 +13,14 @@ const Report = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    clearErrors
   } = useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [preview, setPreview] = useState(null);
   const { user, setUser } = useUser();
   const [imageFile, setImageFile] = useState(null);
+  const [imageError, setImageError] = useState("");
 
   useEffect(() => {
     const userData = localStorage.getItem("userData");
@@ -28,18 +31,30 @@ const Report = () => {
     }
   }, [navigate, setUser]);
 
+  // Cleanup preview URL on unmount
+  useEffect(() => {
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
+
   const onSubmit = async (data) => {
+    console.log("starting submit", data);
+
+    // Validate image before submitting
+    if (!imageFile) {
+      setImageError("Please upload an image");
+      toast.error("Please upload an image");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const { type, reward, description, contact_no } = data;
-      let imageUrl = null;
 
-      if (!imageFile) {
-        toast.error("Please upload an image");
-        setIsSubmitting(false);
-        return;
-      }
-
+      // Upload image to Supabase
       const fileName = `${Date.now()}-${imageFile.name}`;
       const { error: uploadError } = await supabase.storage
         .from("report-images")
@@ -51,8 +66,9 @@ const Report = () => {
         .from("report-images")
         .getPublicUrl(fileName);
 
-      imageUrl = publicUrlData.publicUrl;
+      const imageUrl = publicUrlData.publicUrl;
 
+      // Insert report into database
       const { error } = await supabase
         .from("reports")
         .insert([{
@@ -77,9 +93,33 @@ const Report = () => {
 
   const handleImagePreview = (e) => {
     const file = e.target.files[0];
-    setImageFile(file);
+    console.log("image uploaded", file);
+    
     if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setImageError("Please upload a valid image file");
+        toast.error("Please upload a valid image file");
+        return;
+      }
+
+      // Validate file size (10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        setImageError("Image size must be less than 10MB");
+        toast.error("Image size must be less than 10MB");
+        return;
+      }
+
+      // Clear previous preview
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+
+      setImageFile(file);
       setPreview(URL.createObjectURL(file));
+      setImageError("");
+      setValue("image", file);
+      clearErrors("image");
     }
   };
 
@@ -191,7 +231,7 @@ const Report = () => {
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Upload Image
             </label>
-            <div className="bg-gray-900/50 border-2 border-dashed border-gray-700 rounded-xl overflow-hidden hover:border-blue-500 transition-all">
+            <div className={`bg-gray-900/50 border-2 border-dashed ${imageError ? 'border-red-500' : 'border-gray-700'} rounded-xl overflow-hidden hover:border-blue-500 transition-all`}>
               {preview ? (
                 <div className="relative group">
                   <img
@@ -208,7 +248,6 @@ const Report = () => {
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      {...register("image", { required: "Image is required" })}
                       onChange={handleImagePreview}
                       disabled={isSubmitting}
                     />
@@ -229,6 +268,9 @@ const Report = () => {
                 </label>
               )}
             </div>
+            {imageError && (
+              <p className="text-red-400 text-sm mt-1">{imageError}</p>
+            )}
           </div>
 
           {/* Submit Button */}
