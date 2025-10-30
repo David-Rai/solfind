@@ -6,7 +6,7 @@ import {
   PublicKey,
   Keypair,
 } from "@solana/web3.js";
-import { Program, AnchorProvider, BN } from "@project-serum/anchor";
+import { Program, AnchorProvider, BN } from "@coral-xyz/anchor"; // Updated import
 import idl from "./minimal_find_my_items.json";
 
 const PROGRAM_ID = new PublicKey(
@@ -25,6 +25,7 @@ export default function App() {
 
   const notify = (msg) => alert(msg);
 
+  // Check for wallet connection on component mount
   useEffect(() => {
     const checkWallet = async () => {
       if (window.solana?.isPhantom) {
@@ -33,7 +34,6 @@ export default function App() {
             onlyIfTrusted: true,
           });
           setWalletAddress(publicKey);
-          await initProgram();
         } catch (err) {
           console.warn("Wallet not connected automatically:", err);
         }
@@ -42,11 +42,17 @@ export default function App() {
     checkWallet();
   }, []);
 
+  // Initialize program when walletAddress changes
+  useEffect(() => {
+    if (walletAddress) {
+      initProgram();
+    }
+  }, [walletAddress]);
+
   const connectWallet = async () => {
     try {
       const resp = await window.solana.connect();
       setWalletAddress(resp.publicKey);
-      await initProgram();
     } catch (err) {
       notify("❌ Wallet connection failed: " + err.message);
     }
@@ -56,9 +62,17 @@ export default function App() {
     try {
       const connection = new Connection(NETWORK, "confirmed");
 
-      // FIX 1: Get wallet from window.solana instead of using walletAddress state
-      const wallet = window.solana;
-      
+      // Create proper wallet adapter
+      const wallet = {
+        publicKey: walletAddress,
+        signTransaction: async (transaction) => {
+          return await window.solana.signTransaction(transaction);
+        },
+        signAllTransactions: async (transactions) => {
+          return await window.solana.signAllTransactions(transactions);
+        },
+      };
+
       const provider = new AnchorProvider(
         connection,
         wallet,
@@ -117,7 +131,7 @@ export default function App() {
     if (!program || !walletAddress) return;
 
     try {
-      // FIX 2: Validate public keys
+      // Validate public keys
       if (!reportPubkey || !finderPubkey) {
         notify("❌ Please provide both Report Pubkey and Finder Pubkey");
         return;
@@ -157,7 +171,7 @@ export default function App() {
     if (!program || !walletAddress) return;
 
     try {
-      // FIX 3: Validate public key
+      // Validate public key
       if (!reportPubkey) {
         notify("❌ Please provide Report Pubkey");
         return;
