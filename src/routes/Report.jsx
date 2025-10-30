@@ -223,16 +223,12 @@ const Report = () => {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    {...register("image", { required: "Image is required" })}
                     onChange={handleImagePreview}
                     disabled={isSubmitting}
                   />
                 </label>
               )}
             </div>
-            {errors.image && (
-              <p className="text-red-400 text-sm mt-1">{errors.image.message}</p>
-            )}
           </div>
 
           {/* Submit Button */}
