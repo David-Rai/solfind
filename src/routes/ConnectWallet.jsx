@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Wallet, AlertCircle, CheckCircle, ExternalLink } from "lucide-react";
+import {useNavigate} from 'react-router-dom'
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserDetails from "./UserDetails";
 import { useWallet } from "../store/store.js";
 
 const ConnectWallet = () => {
+    const navigate = useNavigate();
   const [walletAddress, setWalletAddressLocal] = useState(null);
   const [loading, setLoading] = useState(false);
   const { setWalletAddress } = useWallet();

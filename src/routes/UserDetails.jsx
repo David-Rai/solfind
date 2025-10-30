@@ -22,7 +22,7 @@ const UserDetails = () => {
 
     if (userData) {
       setUser(JSON.parse(userData))
-navigate('/explore')
+      navigate('/explore')
     }
   }, []);
 
@@ -42,6 +42,7 @@ navigate('/explore')
       setIsSubmitting(false);
     } else {
       console.log(data)
+      navigate('/explore')
       toast.success("✅ User added successfully!");
       localStorage.setItem("userData", JSON.stringify(data[0]));
     }
