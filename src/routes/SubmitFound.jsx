@@ -16,11 +16,14 @@ const SubmitFound = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    clearErrors
   } = useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [preview, setPreview] = useState(null);
   const { user, setUser } = useUser();
   const [imageFile, setImageFile] = useState(null);
+  const [imageError, setImageError] = useState("");
 
   useEffect(() => {
     if (!report) {
@@ -37,16 +40,24 @@ const SubmitFound = () => {
     }
   }, [navigate, setUser, report]);
 
+  useEffect(() => {
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
+
   const onSubmit = async (data) => {
+    if (!imageFile) {
+      setImageError("Please upload an image");
+      toast.error("Please upload an image");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const { description, contact_no } = data;
-
-      if (!imageFile) {
-        toast.error("Please upload an image");
-        setIsSubmitting(false);
-        return;
-      }
 
       const fileName = `${Date.now()}-${imageFile.name}`;
       const { error: uploadError } = await supabase.storage
@@ -84,9 +95,29 @@ const SubmitFound = () => {
 
   const handleImagePreview = (e) => {
     const file = e.target.files[0];
-    setImageFile(file);
+    
     if (file) {
+      if (!file.type.startsWith('image/')) {
+        setImageError("Please upload a valid image file");
+        toast.error("Please upload a valid image file");
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        setImageError("Image size must be less than 10MB");
+        toast.error("Image size must be less than 10MB");
+        return;
+      }
+
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+
+      setImageFile(file);
       setPreview(URL.createObjectURL(file));
+      setImageError("");
+      setValue("image", file);
+      clearErrors("image");
     }
   };
 
@@ -199,7 +230,7 @@ const SubmitFound = () => {
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Upload Photo of Found Item
               </label>
-              <div className="bg-gray-900/50 border-2 border-dashed border-gray-700 rounded-xl overflow-hidden hover:border-green-500 transition-all">
+              <div className={`bg-gray-900/50 border-2 border-dashed ${imageError ? 'border-red-500' : 'border-gray-700'} rounded-xl overflow-hidden hover:border-green-500 transition-all`}>
                 {preview ? (
                   <div className="relative group">
                     <img
@@ -216,7 +247,6 @@ const SubmitFound = () => {
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        {...register("image", { required: "Image is required" })}
                         onChange={handleImagePreview}
                         disabled={isSubmitting}
                       />
@@ -231,15 +261,14 @@ const SubmitFound = () => {
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      {...register("image", { required: "Image is required" })}
                       onChange={handleImagePreview}
                       disabled={isSubmitting}
                     />
                   </label>
                 )}
               </div>
-              {errors.image && (
-                <p className="text-red-400 text-sm mt-1">{errors.image.message}</p>
+              {imageError && (
+                <p className="text-red-400 text-sm mt-1">{imageError}</p>
               )}
             </div>
 

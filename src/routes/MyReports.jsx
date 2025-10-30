@@ -13,8 +13,10 @@ const MyReports = () => {
     const userData = localStorage.getItem("userData");
     if (userData) {
       setUser(JSON.parse(userData));
-    }
     getReports(useUser.getState().user.id);
+    }else{
+      navigate('/connectWallet')
+    }
   }, []);
 
   const getReports = async (id) => {

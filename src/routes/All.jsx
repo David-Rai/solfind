@@ -11,12 +11,12 @@ import idl from "./minimal_find_my_items.json";
 
 // Environment variables with fallbacks
 const PROGRAM_ID = new PublicKey(
-  process.env.REACT_APP_PROGRAM_ID || "6QfyQYKAUR5rbNgJkLkV4gynvPsbFTcPdQUuZmSVAZMK"
+  import.meta.env.VITE_APP_PROGRAM_ID || "6QfyQYKAUR5rbNgJkLkV4gynvPsbFTcPdQUuZmSVAZMK"
 );
 
-const NETWORK = process.env.REACT_APP_SOLANA_NETWORK === 'mainnet' 
+const NETWORK = import.meta.env.VITE_APP_SOLANA_NETWORK === 'mainnet' 
   ? clusterApiUrl("mainnet-beta")
-  : process.env.REACT_APP_RPC_URL || clusterApiUrl("devnet");
+  : import.meta.env.VITE_APP_RPC_URL || clusterApiUrl("devnet");
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component {
@@ -62,7 +62,7 @@ class ErrorBoundary extends React.Component {
           >
             Reload Page
           </button>
-          {process.env.NODE_ENV === 'development' && (
+          {import.meta.env.NODE_ENV === 'development' && (
             <details style={{ marginTop: '1rem', textAlign: 'left' }}>
               <summary>Error Details (Development)</summary>
               <pre>{this.state.error && this.state.error.toString()}</pre>
