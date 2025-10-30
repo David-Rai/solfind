@@ -1,8 +1,10 @@
 import React from 'react'
+import { useLocation } from 'react-router-dom'
 
 const Finders=()=>{
-
-  reutrn (
+const {state:{r:{id}}}=useLocation()
+console.log(id)
+  return (
     <>
     hey
     </>

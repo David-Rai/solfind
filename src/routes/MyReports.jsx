@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import supabase from "../supabase/supabase";
+import { useNavigate } from "react-router-dom";
 import { useUser } from "../store/store";
 
 const MyReports = () => {
   const { user, setUser } = useUser();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userData = localStorage.getItem("userData");
@@ -108,6 +110,13 @@ const MyReports = () => {
                       <span className="text-yellow-300 font-bold">
                         {r.reward} SOL
                       </span>
+                    </div>
+
+                    <div
+                      onClick={() => navigate("/finders", { state: { r } })}
+                      className="flex items-center cursor-pointer justify-center py-2 px-3 bg-yellow-500/10 rounded-lg border border-yellow-500/20"
+                    >
+                      See Finders
                     </div>
                   </div>
 
