@@ -113,13 +113,15 @@ const MyReports = () => {
                         {r.reward} SOL
                       </span>
                     </div>
+<button
+  onClick={() => navigate("/finders", { state: { report:r } })}
+  className="flex items-center justify-center gap-2 px-4 py-2 bg-green-500/20 border border-green-400 rounded-lg text-green-400 font-semibold hover:bg-green-500/30 hover:text-green-50 hover:scale-105 transition-all duration-200 shadow-sm"
+>
+  See Finders
+</button>
 
-                    <div
-                      onClick={() => navigate("/finders", { state: { r } })}
-                      className="flex items-center cursor-pointer justify-center py-2 px-3 bg-yellow-500/10 rounded-lg border border-yellow-500/20"
-                    >
-                      See Finders
-                    </div>
+
+
                   </div>
 
                   <div className="border-t border-gray-700 pt-3 text-xs text-gray-400">

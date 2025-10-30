@@ -12,7 +12,7 @@ const Finders = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const report = location.state?.r
+  const report = location.state?.report
 
   useEffect(() => {
     const userData = localStorage.getItem("userData");
@@ -23,10 +23,10 @@ const Finders = () => {
 
     setUser(JSON.parse(userData));
 
-    if (!report) {
-      navigate("/explore");
-      return;
-    }
+    // if (!report) {
+    //   navigate("/explore");
+    //   return;
+    // }
 
     getSubmits();
   }, [report, navigate, setUser]);
@@ -36,7 +36,7 @@ const Finders = () => {
       const { data, error } = await supabase
         .from("submits")
         .select("*")
-        .eq("report_id", report.id);
+        .eq("report_id", report?.id);
       if (error) throw error;
       setSubmits(data || []);
     } catch (error) {
