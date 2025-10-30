@@ -11,6 +11,7 @@ import ImageUpload from './routes/ImageUpload'
 import SubmitFound from "./routes/SubmitFound";
 import Report from "./routes/Report";
 import ConnectWallet from './routes/ConnectWallet'
+import All from "./routes/All";
 
 const router = createBrowserRouter([
   {
@@ -37,11 +38,11 @@ const router = createBrowserRouter([
     path: "/myReports",
     element: <MyReports />,
   }
-  // ,
-  // {
-  //   path: "/all",
-  //   element: <All />,
-  // }
+  ,
+  {
+    path: "/all",
+    element: <All />,
+  }
 ]);
 
 const App=()=>{
