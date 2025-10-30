@@ -337,6 +337,7 @@ function App() {
         }
       );
 
+import idl from "./minimal_find_my_items.json";
 const programInstance = new Program(idl, PROGRAM_ID, provider);
 
       setProgram(programInstance);
