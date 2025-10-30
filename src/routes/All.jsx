@@ -12,6 +12,7 @@ import idl from "./minimal_find_my_items.json";
 const PROGRAM_ID = new PublicKey(
   "6QfyQYKAUR5rbNgJkLkV4gynvPsbFTcPdQUuZmSVAZMK"
 );
+
 const NETWORK = clusterApiUrl("devnet");
 
 export default function App() {

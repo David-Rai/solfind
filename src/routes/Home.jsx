@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Search, Users, MapPin, Award, Sparkles } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 
 function App() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
-
+const navigate=useNavigate()
   useEffect(() => {
     setIsVisible(true);
     const handleMouseMove = (e) => {
@@ -54,12 +55,12 @@ function App() {
             
             <div className="flex gap-4 justify-center flex-wrap">
               <button className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg font-semibold overflow-hidden hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105">
-                <span className="relative z-10">Create Account</span>
+                <span className="relative z-10" onClick={()=> navigate("/connectWallet")}>Create Account</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </button>
               
               <button className="group px-8 py-4 bg-slate-800/50 backdrop-blur-sm border border-blue-500/30 rounded-lg font-semibold hover:bg-slate-800 hover:border-blue-400/50 transition-all duration-300 hover:scale-105">
-                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">Explore</span>
+                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent" onClick={()=> navigate("/explore")}>Explore</span>
               </button>
             </div>
           </div>
