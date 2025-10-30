@@ -7,6 +7,8 @@ import {
   Keypair,
 } from "@solana/web3.js";
 import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
+import idl from "./minimal_find_my_items.json";
+
 
 // PROGRAM_ID and NETWORK configuration
 const PROGRAM_ID = new PublicKey(
@@ -335,10 +337,8 @@ function App() {
         }
       );
 
-      // IMPORTANT: Replace mockIdl with your actual IDL import
-      // import idl from "./minimal_find_my_items.json";
-      const programInstance = new Program(mockIdl, PROGRAM_ID, provider);
-      
+const programInstance = new Program(idl, PROGRAM_ID, provider);
+
       setProgram(programInstance);
       console.log("Program initialized successfully");
       

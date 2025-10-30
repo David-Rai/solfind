@@ -23,11 +23,6 @@ const Finders = () => {
 
     setUser(JSON.parse(userData));
 
-    // if (!report) {
-    //   navigate("/explore");
-    //   return;
-    // }
-
     getSubmits();
   }, [report, navigate, setUser]);
 
