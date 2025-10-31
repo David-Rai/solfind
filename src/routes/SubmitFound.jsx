@@ -5,7 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AlignLeft, Image as ImageIcon, Phone, Upload, CheckCircle } from "lucide-react";
 import supabase from "../supabase/supabase";
-import { useUser } from "../store/store";
+import { useUser} from "../store/store";
 
 const SubmitFound = () => {
   const navigate = useNavigate();
@@ -72,6 +72,11 @@ const SubmitFound = () => {
 
       const imageUrl = publicUrlData.publicUrl;
 
+      //getting walletaddress
+      const res2=await supabase.from("users")
+      .select('pubkey')
+      .single()
+
       const { error } = await supabase.from("submits").insert([
         {
           description,
@@ -80,6 +85,7 @@ const SubmitFound = () => {
           contact_no,
           user_id: user.id,
           name: user.name,
+          pubkey:res2.data.pubkey
         },
       ]);
 

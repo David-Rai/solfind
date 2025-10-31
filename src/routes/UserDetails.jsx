@@ -33,7 +33,7 @@ const UserDetails = () => {
     const { name, email, contact_no } = formData;
 
     const { error,data } = await supabase.from("users").insert([
-      { name, email, contact_no },
+      { name, email, contact_no,pubkey:walletAddress },
     ])
       .select()
 
