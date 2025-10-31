@@ -35,6 +35,7 @@ const SubmitFound = () => {
     const userData = localStorage.getItem("userData");
     if (userData) {
       setUser(JSON.parse(userData));
+getpub()
     } else {
       navigate("/connectWallet");
     }
@@ -71,11 +72,10 @@ const SubmitFound = () => {
         .getPublicUrl(fileName);
 
       const imageUrl = publicUrlData.publicUrl;
-
-      //getting walletaddress
+       //getting walletaddress
       const res2=await supabase.from("users")
       .select('pubkey')
-      .single()
+      .eq("id",useUser.getState().user.id)
 
       const { error } = await supabase.from("submits").insert([
         {
@@ -85,7 +85,7 @@ const SubmitFound = () => {
           contact_no,
           user_id: user.id,
           name: user.name,
-          pubkey:res2.data.pubkey
+          pubkey:res2.data[0].pubkey
         },
       ]);
 
@@ -98,7 +98,12 @@ const SubmitFound = () => {
       setIsSubmitting(false);
     }
   };
-
+const getpub=async ()=>{
+         //getting walletaddress
+      const res2=await supabase.from("users")
+      .select('pubkey')
+      .eq("id",useUser.getState().user.id)
+}
   const handleImagePreview = (e) => {
     const file = e.target.files[0];
     
