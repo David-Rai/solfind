@@ -11,8 +11,7 @@ import Finders from './routes/Finders'
 import SubmitFound from "./routes/SubmitFound";
 import Report from "./routes/Report";
 import ConnectWallet from './routes/ConnectWallet'
-import All from "./routes/All";
-import TransferSolPhantom from "./routes/TransferSolpHantom";
+import TransferSolPhantom from "./routes/TransferSolPhantom";
 
 const router = createBrowserRouter([
   {
@@ -38,11 +37,6 @@ const router = createBrowserRouter([
   {
     path: "/myReports",
     element: <MyReports />,
-  }
-  ,
-  {
-    path: "/all",
-    element: <All />,
   },
   {
     path: "/finders",
