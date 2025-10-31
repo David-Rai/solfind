@@ -43,21 +43,9 @@ const Finders = () => {
   };
 
   const handleApprove = async (submit) => {
-    console.log("approve this ",submit)
-    const {pubkey}=submit
 
-    // try {
-    //   const { error } = await supabase
-    //     .from("submits")
-    //     .update({ status: "approved" })
-    //     .eq("id", submitId);
-    //   if (error) throw error;
-    //   toast.success("Submission approved!");
-    //   getSubmits();
-    // } catch (error) {
-    //   console.error("Error approving submit:", error.message);
-    //   toast.error("Failed to approve submission");
-    // }
+    console.log("approve it")
+    navigate('/transfer',{state:{submit,report}})
   };
 
   const handleRemove = async (submitId) => {
