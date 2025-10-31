@@ -12,6 +12,7 @@ import SubmitFound from "./routes/SubmitFound";
 import Report from "./routes/Report";
 import ConnectWallet from './routes/ConnectWallet'
 import All from "./routes/All";
+import TransferSolPhantom from "./routes/TransferSolpHantom";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: "/finders",
     element: <Finders />,
+  },
+  {
+    path: "/transfer",
+    element: <TransferSolPhantom />,
   }
 ]);
 

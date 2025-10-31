@@ -42,8 +42,10 @@ const Finders = () => {
     }
   };
 
-  const handleApprove = async (submitId) => {
-    console.log("approve this ",submitId)
+  const handleApprove = async (submit) => {
+    console.log("approve this ",submit)
+    const {pubkey}=submit
+
     // try {
     //   const { error } = await supabase
     //     .from("submits")
@@ -213,7 +215,7 @@ const Finders = () => {
                   {/* Actions */}
                   <div className="flex gap-2">
                     <button
-                      onClick={() => handleApprove(submit.id)}
+                      onClick={() => handleApprove(submit)}
                       disabled={submit.status === "approved"}
                       className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-200 ${
                         submit.status === "approved"
