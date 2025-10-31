@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Plus, FileText, Coins, User, Calendar } from "lucide-react";
+import { Search, Plus, FileText, Coins, User } from "lucide-react";
 import supabase from "../supabase/supabase";
+import { Connection, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 const Explore = () => {
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [walletBalance, setWalletBalance] = useState(null);
+  const [walletAddress, setWalletAddress] = useState(null);
 
   useEffect(() => {
     const getReports = async () => {
@@ -24,15 +27,52 @@ const Explore = () => {
     getReports();
   }, []);
 
-  // Filter reports based on search term
-  const filteredReports = reports.filter(report =>
-    report.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    report.description.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    const getWalletBalance = async () => {
+      try {
+        const provider = window.solana;
+        if (provider && provider.isPhantom) {
+          const resp = await provider.connect();
+          const connection = new Connection("https://api.devnet.solana.com");
+          const publicKey = new PublicKey(resp.publicKey.toString());
+          setWalletAddress(publicKey.toBase58());
+          const balance = await connection.getBalance(publicKey);
+          setWalletBalance((balance / LAMPORTS_PER_SOL).toFixed(3));
+        }
+      } catch (err) {
+        console.error("Wallet connection failed:", err);
+      }
+    };
+    getWalletBalance();
+  }, []);
+
+  const filteredReports = reports.filter(
+    (report) =>
+      report.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Wallet Balance Section */}
+        {walletAddress && (
+          <div className="flex justify-end mb-6">
+            <div className="bg-gray-800 border border-gray-700 rounded-xl px-5 py-3 flex items-center gap-3">
+              <Coins className="text-yellow-400" size={20} />
+              <div>
+                <p className="text-sm text-gray-400">Wallet Balance</p>
+                <p className="font-bold text-white">
+                  {walletBalance ? `${walletBalance} SOL` : "Loading..."}
+                </p>
+                <p className="text-xs text-gray-500 truncate max-w-[180px]">
+                  {walletAddress}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header Section */}
         <div className="mb-10">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-6">
@@ -46,7 +86,7 @@ const Explore = () => {
                 Help reunite lost items with their owners
               </p>
             </div>
-            
+
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => navigate("/report")}
@@ -78,7 +118,6 @@ const Explore = () => {
           </div>
         </div>
 
-        {/* Stats Bar */}
         {!loading && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 rounded-xl p-4 backdrop-blur-sm">
@@ -92,7 +131,7 @@ const Explore = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 border border-yellow-500/20 rounded-xl p-4 backdrop-blur-sm">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-yellow-500/20 rounded-lg">
@@ -106,7 +145,7 @@ const Explore = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20 rounded-xl p-4 backdrop-blur-sm">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-green-500/20 rounded-lg">
@@ -121,7 +160,6 @@ const Explore = () => {
           </div>
         )}
 
-        {/* Loading State */}
         {loading ? (
           <div className="flex flex-col justify-center items-center min-h-[500px]">
             <div className="relative">
@@ -131,7 +169,6 @@ const Explore = () => {
             <p className="mt-6 text-gray-400 animate-pulse">Loading reports...</p>
           </div>
         ) : filteredReports.length === 0 ? (
-          /* Empty State */
           <div className="flex flex-col items-center justify-center min-h-[500px] text-center px-4">
             <div className="relative mb-6">
               <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full"></div>
@@ -141,8 +178,8 @@ const Explore = () => {
               {searchTerm ? "No matching reports found" : "No reports yet"}
             </h2>
             <p className="text-gray-400 mb-6 max-w-md">
-              {searchTerm 
-                ? "Try adjusting your search terms or clear the search to see all reports." 
+              {searchTerm
+                ? "Try adjusting your search terms or clear the search to see all reports."
                 : "Be the first to report a missing item and help build our community!"}
             </p>
             {searchTerm ? (
@@ -163,68 +200,61 @@ const Explore = () => {
             )}
           </div>
         ) : (
-          /* Reports Grid */
-    /* Reports Grid */
-<div className="grid grid-cols-3 gap-6">
-  {filteredReports.map((report, index) => (
-    <div
-      key={report.id}
-      className="group bg-gray-800/40 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden flex flex-col hover:transform hover:scale-[1.02] transition-all duration-300 border border-gray-700/50 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10"
-      style={{ animationDelay: `${index * 50}ms` }}
-    >
-      {/* Image Section */}
-      <div className="relative w-full h-52 bg-gray-900 overflow-hidden">
-        {report.image_url ? (
-          <>
-            <img
-              src={report.image_url}
-              alt={report.type}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent"></div>
-          </>
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900 flex items-center justify-center">
-            <span className="text-7xl opacity-20">📦</span>
-          </div>
-        )}
-        
-        {/* Reward Badge */}
-        <div className="absolute top-3 right-3 bg-yellow-500/90 backdrop-blur-sm text-gray-900 px-3 py-1.5 rounded-full font-bold text-sm shadow-lg flex items-center gap-1">
-          <Coins size={14} />
-          {report.reward} SOL
-        </div>
-      </div>
-      
-      {/* Content Section */}
-      <div className="p-5 flex-1 flex flex-col">
-        <h2 className="text-xl font-bold mb-2 text-white line-clamp-1 group-hover:text-blue-400 transition-colors">
-          {report.type}
-        </h2>
-        
-        <p className="text-gray-400 text-sm mb-4 flex-1 line-clamp-3 leading-relaxed">
-          {report.description}
-        </p>
-        
-        {/* Reporter Info */}
-        <div className="flex items-center gap-2 text-xs text-gray-500 pb-4 border-b border-gray-700/50">
-          <User size={14} className="text-gray-600" />
-          <span>Reported by <span className="text-gray-400 font-medium">{report.name}</span></span>
-        </div>
-      </div>
-      
-      {/* Action Button */}
-      <button
-        onClick={() => navigate('/submitFound', { state: { report } })}
-        className="m-4 mt-0 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-5 py-3.5 rounded-xl font-semibold transition-all duration-200 shadow-lg shadow-green-500/20 hover:shadow-green-500/40 active:scale-95 flex items-center justify-center gap-2"
-      >
-        <span>✓</span>
-        I Found This Item
-      </button>
-    </div>
-  ))}
-</div>
+          <div className="grid grid-cols-3 gap-6">
+            {filteredReports.map((report, index) => (
+              <div
+                key={report.id}
+                className="group bg-gray-800/40 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden flex flex-col hover:transform hover:scale-[1.02] transition-all duration-300 border border-gray-700/50 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <div className="relative w-full h-52 bg-gray-900 overflow-hidden">
+                  {report.image_url ? (
+                    <>
+                      <img
+                        src={report.image_url}
+                        alt={report.type}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent"></div>
+                    </>
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900 flex items-center justify-center">
+                      <span className="text-7xl opacity-20">📦</span>
+                    </div>
+                  )}
 
+                  <div className="absolute top-3 right-3 bg-yellow-500/90 backdrop-blur-sm text-gray-900 px-3 py-1.5 rounded-full font-bold text-sm shadow-lg flex items-center gap-1">
+                    <Coins size={14} />
+                    {report.reward} SOL
+                  </div>
+                </div>
+
+                <div className="p-5 flex-1 flex flex-col">
+                  <h2 className="text-xl font-bold mb-2 text-white line-clamp-1 group-hover:text-blue-400 transition-colors">
+                    {report.type}
+                  </h2>
+                  <p className="text-gray-400 text-sm mb-4 flex-1 line-clamp-3 leading-relaxed">
+                    {report.description}
+                  </p>
+                  <div className="flex items-center gap-2 text-xs text-gray-500 pb-4 border-b border-gray-700/50">
+                    <User size={14} className="text-gray-600" />
+                    <span>
+                      Reported by{" "}
+                      <span className="text-gray-400 font-medium">{report.name}</span>
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => navigate("/submitFound", { state: { report } })}
+                  className="m-4 mt-0 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-5 py-3.5 rounded-xl font-semibold transition-all duration-200 shadow-lg shadow-green-500/20 hover:shadow-green-500/40 active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <span>✓</span>
+                  I Found This Item
+                </button>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </main>
@@ -232,3 +262,4 @@ const Explore = () => {
 };
 
 export default Explore;
+  
